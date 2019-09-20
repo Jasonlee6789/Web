@@ -43,7 +43,7 @@ namespace WebApplicationNZ
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=HelloWorld}/{action=Index}/{id?}");
             });
         }
     }
