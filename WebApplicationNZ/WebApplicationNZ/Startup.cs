@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using WebApplicationNZ.Models;
+using WebApplicationNZ.Data;
 
 namespace WebApplicationNZ
 {
