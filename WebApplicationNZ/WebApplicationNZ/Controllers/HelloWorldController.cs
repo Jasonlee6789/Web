@@ -22,7 +22,8 @@ namespace WebApplicationNZ.Controllers
             public IActionResult Index()
         {
             return View(); //It uses a view template to generate an HTML response. 
-        }//The above update code calls the controller's View method.
+        }
+        //The above update code calls the controller's View method.
          // Controller methods (also known as action methods), such as the Index method above, 
          // generally return an IActionResult (or a class derived from ActionResult), not a type like string.
 
