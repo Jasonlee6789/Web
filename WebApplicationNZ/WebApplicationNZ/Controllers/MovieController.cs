@@ -75,7 +75,8 @@ namespace WebApplicationNZ.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie.SingleOrDefaultAsync(m => m.Id == id);
+            //var movie = await _context.Movie.SingleOrDefaultAsync(m => m.Id == id);
+            var movie = await _context.Movie.FindAsync(id);
             if (movie == null)
             {
                 return NotFound();
