@@ -56,6 +56,7 @@ namespace WebApplicationNZ
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=HelloWorld}/{action=Index}/{id?}");
+                              //[Controller]/[ActionName]/[Parameters]
             });
         }
     }

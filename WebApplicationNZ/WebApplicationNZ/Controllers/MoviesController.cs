@@ -21,10 +21,42 @@ namespace WebApplicationNZ.Controllers
  //The constructor uses Dependency Injection to inject the database context (WANZContext) into the controller.
         //The database context is used in each of the CRUD methods in the controller.
 
-        // GET: Movie
-        public async Task<IActionResult> Index()
+        // GET: Movies
+
+       /* public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Movie.ToListAsync());
+            var movies = from m in _context.Movie
+                        select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                movies = movies.Where(s => s.Title.Contains(searchString));
+            }
+
+            return View(await movies.ToListAsync());
+        }*/
+
+            public async Task<IActionResult> Index(string movieGenre, string searchString)
+        {
+            //use LINQ to get list of genres.
+            //The following code is a LINQ query that retrieves all the genres from the database.
+            IQueryable<string> genreQuery = from m in _context.Movie
+                                            orderby m.Genre
+                                            select m.Genre;
+            var movies = from m in _context.Movie
+                         select m;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                movies = movies.Where(x => x.Genre == movieGenre);
+            }
+
+            var movieGenreVM = new MovieGenereViewModel
+            {
+                Genres = new SelectList(await genreQuery.Distinct().ToListAsync()),
+                Movies = await movies.ToListAsync()
+            };
+            return View(movieGenreVM);
         }
 
         // GET: Movie/Details/5
@@ -36,7 +68,7 @@ namespace WebApplicationNZ.Controllers
             }
 
             var movie = await _context.Movie
-                .SingleOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
                 return NotFound();
@@ -50,19 +82,23 @@ namespace WebApplicationNZ.Controllers
         {
             return View();
         }
+        //The first (HTTP GET) Create action method displays the initial Create form. 
+
+        //The second ([HttpPost]) version handles the form post.
 
         // POST: Movie/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price")] Movie movie)
+        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             return View(movie);
         }
@@ -128,7 +164,7 @@ namespace WebApplicationNZ.Controllers
             }
 
             var movie = await _context.Movie
-                .SingleOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
                 return NotFound();
@@ -152,5 +188,12 @@ namespace WebApplicationNZ.Controllers
         {
             return _context.Movie.Any(e => e.Id == id);
         }
+
+        [HttpPost]
+        public string Index(string searchString, bool notUsed)
+        {
+            return "From [HttpPost]inde: filter on " + searchString;
+        }
+        //The bool notUsed parameter is used to create an overload for the Index method. 
     }
 }
